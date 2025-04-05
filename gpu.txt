@@ -1,0 +1,125 @@
+week10
+
+Recap
+introduction to opencl
+opencl runtime
+sync in opencl
+
+
+heterogeneous computing
+Computing with more that one type of computing is known as heterogeneous. opencl is ideal
+for such type of tasks(CPU, GPU(various types), FPGA etc
+
+Challenge is to identify preffered task to device mapping, minimize overhead due to
+data transfer, synchronization etc. in such heterogeneous system
+
+Different types  of command queue and devices
+1. Command queue associated with only one devices
+2. Single device associated with single command queue
+3. Single device associated with multiple command queue with same context
+4. Single device associated with multiple command queue with different context within same
+platform
+5. Different devices associated with multiple command queues with same context
+6. Different devices associated with multiple Command queues with different context
+
+3.
+Multiple command-queues can be mapped to the same device, allowing independent execution of different commands or overlapping commands with host-device communication. This enables applications to queue multiple commands without synchronization, as long as these commands do not share objects.
+
+eg - Three independent tasks can be executed using three command queues
+(with in-order execution), each holding tasks.
+A pipeline is formed where the device runs kernel code while I/O operations
+are performed,
+ensuring better utilization by avoiding idle time while waiting for data.
+
+4.
+Typically provides not additional benefits
+Useful when an application use some third party library, that can also happens to use
+opencl internally to accelerate some algorithms
+
+****** Multiple Device programming
+There can be two execution models in this category
+i. Two or more devices work in pipeline manner such that one waits for another
+ii. Multiple devices work concurrently, independent of each other
+
+5.
+For multiple devices in a system each device needs it's own command queues
+Standard way to work with mutliple devices on same platform is creating single context
+a. Memory objects are globally visible to all devices with same context
+b. An events is only valid in a context where it is used
+
+Within same context, sharing of objects across multiple command-queue will require  appropriate synchronization
+Each objects visible to host program can be used for syncs
+If sync is established, the programmer must assure the command queue progress concurrently
+
+**** code
+
+pipeline manner execution
+Multiple devices working in a cooperative manner on the same data such that the CPU
+queue will wait until the GPU kernel is finished.
+Multiple devices working in a parallel manner where both GPUs do not use the
+same buffers and will execute independently.
+The CPU queue will wait until both GPU devices are finished
+
+**** code
+
+6.
+Context is created according to platform, for different devices from different platforms we create mulitple Context
+For separate context for different devices, sync is not possible using events, the only way to do this is to use "clFinish" then copy that context via host memory space
+
+**** code
+**** code - pipline manner
+**** code - concurrent manner
+
+*******
+1. Concurrent kernel execution
+The concurrent taks can be running -
+a. Different kernels from without independent applications
+b. Different kernels without dependency between them from same application
+c. Partitioned instances of same kernel are SIMD in nature
+
+2. Executing
+Heterogeneous computing can efficiently exploit both CPU and GPU devices by
+invoking OpenCL’s data transfer APIs, query memory objects, and data/work
+partitioning between the multiple devices
+Technique is used to partition the workload of a single kernel across multiple
+available OpenCL devices
+
+3. Partitioning
+Partitioning is a technique used to partition the data efficiently and distribute them
+across multiple OpenCL devices, because some kernels are faster, and these devices may remain idle
+Then launch same kernel with partitioned data across multiple OpenCL devices
+The partitioned kernels can run concurrently on different devices reducing the total
+execution time
+
+eg - Manual partitioning
+a. Vector addition of two vectors of size LENGTH
+b. Partition across 1 CPU device and 1 GPU on 2 seperate contexts
+c. Partitioning across CPU and GPU (20% to CPU and 80% to GPU)
+**** code
+
+
+Application: DAG scheduling
+
+*****************
+Heterogeneous Computing: Factors to consider
+a. scheduling overhead
+b. Location of data: on which device the data is currently residing
+c. Granularity of workloads: How to divide the problem
+d. Execution performance relative to other devices
+
+Device Fission
+The ability for some devices to be divided into smaller subdevices
+Device Fission is supported only on CPU-like devices
+It is possible to use Device Fission to build a portable and powerful threading
+application based on task parallelism
+
+eg OpenCL Sub-Devices
+**** code
+
+
+***********
+Concurrency  and Cuda
+
+Cuda streams
+
+async cuda stream and examples

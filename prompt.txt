@@ -1,0 +1,44 @@
+Langgraph is an open source ai agentic framework. It's very useful in making agentic frameworks, multi agentic frameworks etc. Very easy to learn and implement. Initially i found it little difficult due to it's changing docs (particularly langchain) but now it's much easier to work with.
+
+Table of contents
+I)
+    1. State Schema
+    2. State reducers
+    3. Multiple schemas
+    4. Trim and filter messages
+    5. Chatbot, summarization with memory
+    6. Chatbot w/ summarization with external memory
+
+II)
+    1.
+
+
+1. State Schema - These are basically like defining a state or variable so that it can be used throughout the cycle of the event. You can define multiple schemas, and use them to interact with your chat model or  llm.
+How to define it -
+
+a. use typeddict
+from typing_extensions import Literal, TypedDict
+
+class SimpleSchema(TypedDict):
+    graph_state: str
+    count: int
+
+b. use pydantic
+# you can use add_message etc, which can basically add the existing messages to the graph_state as list 
+
+from pydantic import Basemodel
+
+class SimpleSchema(Basemodel):
+    graph_state: str
+    count: int
+
+2. State reducers
+
+4. This section help reduing the message overhead, that is being fed to the llm increasing the cost per token
+
+5. 
+
+hey can you generate langgraph such that it follows the following procedure - 
+1. It take the input as topic then it calls the llm for deciding if there is tool call require which is tavily search and wikipedia, it generates the important questions based on the prompt (prompt is basically the model answer), and then upon  collecting the resources, it answers the questions, and then reformat that, and in the last node there is final check if the answer matches the pattern if yes then give the answer if not then go the node to redefine the answers based  on the the model answer
+there should a state which should contain headline, topic, introduction, main, and conclustion, and use more states if necessary 
+there should also be state to manage the subgraphs, and use send api to do the reduntant tasks and keep it as simple as possible, and use only langchain, and langraph tools
